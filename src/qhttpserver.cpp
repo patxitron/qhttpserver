@@ -26,12 +26,14 @@
 #include <QTcpSocket>
 #include <QVariant>
 #include <QDebug>
-#include <cstring>
-#include <cstdio>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
+#ifndef Q_WS_WIN
+#   include <cstring>
+#   include <cstdio>
+#   include <sys/types.h>
+#   include <sys/socket.h>
+#   include <sys/un.h>
+#   include <unistd.h>
+#endif
 
 #include "qhttpconnection.h"
 
