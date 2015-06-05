@@ -28,3 +28,6 @@ docs/html
 *.lib
 *.sln
 *.rc
+
+# QtCreator
+*.pri
