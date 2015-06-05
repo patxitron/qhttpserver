@@ -32,6 +32,7 @@
 
 #include <QObject>
 #include <QHostAddress>
+#include <QFile>
 
 /// Maps status codes to string reason phrases
 extern QHash<int, QString> STATUS_CODES;
@@ -82,11 +83,14 @@ public:
     /// Start the server by bounding to the given @c socket (unix doamin socket).
     /** @note This function returns immediately, it does not block.
         @param socket Unix domain socket on which to listen to..
+        @param permissions Permissions for the socket file to be created.
         @return True if the server was started successfully, false otherwise.
         @sa listen(quint16)
         @sa listen(const QHostAddress&, quint16)
         @sa listen(quint16) */
-    bool listen(const QString &socket);
+    bool listen(QString sock, QFile::Permissions permissions = 
+                                     QFile::ReadOwner | QFile::WriteOwner
+                                   | QFile::ReadGroup | QFile::WriteGroup);
 
     /// Stop the server and listening for new connections.
     void close();
