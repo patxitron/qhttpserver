@@ -26,6 +26,12 @@
 #include <QTcpSocket>
 #include <QVariant>
 #include <QDebug>
+#include <cstring>
+#include <cstdio>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
 
 #include "qhttpconnection.h"
 
@@ -124,6 +130,52 @@ bool QHttpServer::listen(const QHostAddress &address, quint16 port)
 bool QHttpServer::listen(quint16 port)
 {
     return listen(QHostAddress::Any, port);
+}
+
+bool QHttpServer::listen(const QString &socket)
+{
+    Q_ASSERT(!m_tcpServer);
+#ifdef Q_WS_WIN
+    return false;
+#else
+    m_tcpServer = new QTcpServer(this);
+
+    int s = ::socket(AF_UNIX, SOCK_STREAM, 0);
+    if (s == -1) {
+        delete m_tcpServer;
+        m_tcpServer = NULL;
+        return false;
+    }
+    struct sockaddr_un local;
+    local.sun_family = AF_UNIX;
+    std::strncpy(local.sun_path, socket.toLocal8Bit().constData(), sizeof(local.sun_path));
+    local.sun_path[sizeof(local.sun_path) - 1] = 0;
+    if (QFile::exists(socket)) QFile::remove(socket);
+    int len = std::strlen(local.sun_path) + sizeof(local.sun_family);
+    if (::bind(s, reinterpret_cast<struct sockaddr*>(&local), len) == -1) {
+        perror("Can not bind socket");
+        ::close(s);
+        delete m_tcpServer;
+        m_tcpServer = NULL;
+        return false;
+    }
+    if (::listen(s, 5) == -1) {
+        perror("Cannot set socket to listening state");
+        ::close(s);
+        delete m_tcpServer;
+        m_tcpServer = NULL;
+        return false;
+    }
+    bool couldBindToPort = m_tcpServer->setSocketDescriptor(s);
+    if (couldBindToPort) {
+        connect(m_tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
+    } else {
+        ::close(s);
+        delete m_tcpServer;
+        m_tcpServer = NULL;
+    }
+    return couldBindToPort;
+#endif
 }
 
 void QHttpServer::close()

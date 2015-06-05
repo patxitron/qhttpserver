@@ -10,6 +10,14 @@ QHttpServer is available under the MIT License.
 **NOTE: QHttpServer is NOT fully HTTP compliant right now! DO NOT use it for
 anything complex**
 
+Patxitron version
+-----------------
+
+This fork allows to set a server listening in a unix domain socket (unix only).
+
+It is good for http (restful) based IPC and for getting it running behind a nginx
+reverse proxy.
+
 Installation
 ------------
 

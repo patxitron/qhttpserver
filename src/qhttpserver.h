@@ -79,6 +79,15 @@ public:
         @sa listen(const QHostAddress&, quint16) */
     bool listen(quint16 port);
 
+    /// Start the server by bounding to the given @c socket (unix doamin socket).
+    /** @note This function returns immediately, it does not block.
+        @param socket Unix domain socket on which to listen to..
+        @return True if the server was started successfully, false otherwise.
+        @sa listen(quint16)
+        @sa listen(const QHostAddress&, quint16)
+        @sa listen(quint16) */
+    bool listen(const QString &socket);
+
     /// Stop the server and listening for new connections.
     void close();
 Q_SIGNALS:
