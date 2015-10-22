@@ -1,3 +1,3 @@
-isEmpty(PREFIX):PREFIX = /usr/local
+isEmpty(PREFIX):PREFIX = ../bin
 isEmpty(LIBDIR):LIBDIR = $${PREFIX}/lib
 isEmpty(INCLUDEDIR):INCLUDEDIR = $${PREFIX}/include

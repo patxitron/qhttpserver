@@ -31,3 +31,9 @@ docs/html
 
 # QtCreator
 *.pri
+
+bin
+examples/bodydata/bodydata
+examples/greeting/greeting
+examples/helloworld/helloworld
+Makefile.*
